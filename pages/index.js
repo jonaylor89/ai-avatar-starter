@@ -73,7 +73,7 @@ const Home = () => {
       body: JSON.stringify({ input }),
     });
 
-    const data = await response.json();
+    // const data = await response.json();
 
     if (response.status === 503) {
       setRetry(data.estimated_time);
@@ -88,10 +88,17 @@ const Home = () => {
       return;
     }
 
+    const data = await response.body.getReader().read();
+    console.log(data);
+
+    const buf = data.value.buffer;
+    const content = URL.createObjectURL(
+      new Blob([buf], { type: 'image/jpeg' })
+    );
+
     setFinalPrompt(input);
     setInput('');
-    console.log(data);
-    setImg(data.image);
+    setImg(content);
     setIsGenerating(false);
   }
 
